@@ -1,4 +1,3 @@
-import os
 import re
 
 from PIL import Image
@@ -32,7 +31,7 @@ class Request:
         if egn_search:
             egn = egn_search.group().removeprefix('ЕГН ').removesuffix(",").replace(" ", "")
         else:
-            egn = 'няма посочено'
+            egn = 'null'
         self.egn = egn
 
     def get_actions(self):
@@ -40,18 +39,21 @@ class Request:
         ACTIONS = {
             "РБСС": ["банкови сметки", "сметки"],
             "опис": ["опис", "Опис"],
-            "работодател": ["трудов"],
+            "работодател": ["трудов", "трудови"],
             "мобилен оператор": ["мобилни оператори"],
             "МДТ": ["МДТ", "община"],
             "KAT": ["КАТ"],
-            "ИКАР": ["ИКАР", "ИР"],
+            "ИКАР": ["ИКАР"],
             "74": ["НАП"],
+            "напомнително": ["напомнително"],
         }
 
         for action, keyword in ACTIONS.items():
             for k in keyword:
                 if k in self.text and action not in actions_temp:
                     actions_temp.append(action)
+        if len(actions_temp) == 0:
+            actions_temp.append('null')
         self.actions = actions_temp
 
     def get_request_data(self):
@@ -66,20 +68,3 @@ class Request:
         for _ in self.actions:
             data.append([_, self.case_number, self.egn])
         self.csv_data = data
-
-
-def process_requests():
-    requests_csv = []
-    # folder = str(input("select dir: "))
-    folder = '/Users/wolfson/wolfson_dev/tess/test_images/molbi'  # testing
-    directory = fr'{folder}'
-    for entry in os.scandir(directory):
-        if (entry.path.endswith('.jpg')) and entry.is_file():
-            obj = Request(entry.path)
-            obj.prep_csv()
-            requests_csv.append(obj.csv_data[:])
-            os.rename(entry, f'{directory}/{obj.case_number}.jpg')
-    return requests_csv
-
-
-process_requests()
