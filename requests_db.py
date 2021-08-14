@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 from process_requests import process
 
 
@@ -23,39 +24,48 @@ def add_requests():
     conn.close()
 
 
-def export_all():
+def export_all_pending():
     conn = sqlite3.connect('request.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM requests")
-    export = c.fetchall()
+    export = pd.read_sql_query("""SELECT r_action, r_case, r_egn FROM requests
+                                WHERE r_status = 'pending'""", conn)
+    export.to_csv('all.csv', index=True)
     conn.commit()
     conn.close()
 
 
-def export_one(action):
+def export_one_pending(act):
     conn = sqlite3.connect('request.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM requests WHERE r_action = (?)", action)
-    export = c.fetchall()
+    export = pd.read_sql_query("""SELECT r_action, r_case, r_egn FROM requests
+                                WHERE r_action = '{}' AND r_status = 'pending'""".format(act), conn)
+    export.to_csv(f'{act}.csv', index=True)
     conn.commit()
     conn.close()
+
+
+def export_one_for_taxes(act):
+    conn = sqlite3.connect('request.db')
+    conn.row_factory = lambda cursor, row: row[0]
+    c = conn.cursor()
+    export = c.execute("""SELECT r_case FROM requests
+                    WHERE r_action = '{}' AND r_status = 'pending'""".format(act)).fetchall()
+    conn.commit()
+    conn.close()
+    return export
 
 
 def mark_done_all():
     conn = sqlite3.connect('request.db')
     c = conn.cursor()
-    c.execute("UPDATE * FROM requests SET r_action = 'done'")
+    c.execute("""UPDATE requests SET r_action = 'done'
+                WHERE r_status = 'pending'""")
     conn.commit()
     conn.close()
 
 
-def mark_done_one():
-    action = input('choose action: ')
+def mark_done_one(act):
     conn = sqlite3.connect('request.db')
     c = conn.cursor()
-    c.execute("UPDATE requests SET r_status = 'done' WHERE r_action = (?)", (action,))
+    c.execute("""UPDATE requests SET r_status = 'pending'
+                WHERE r_action = '{}' AND r_status = 'pending'""".format(act))
     conn.commit()
     conn.close()
-
-
-mark_done_one()

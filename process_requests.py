@@ -5,8 +5,8 @@ from tess_requests import Request
 
 def process():
     requests_csv = []
-    # folder = str(input("select dir: "))
-    folder = '/Users/wolfson/wolfson_dev/tess_requests/molbi'  # testing
+    folder = str(input("select dir: "))
+    # folder = '/Users/wolfson/wolfson_dev/tess_requests/molbi'  # testing
     directory = fr'{folder}'
     for entry in os.scandir(directory):
         if (entry.path.endswith('.jpg')) and entry.is_file():
