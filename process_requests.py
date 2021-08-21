@@ -3,10 +3,9 @@ import os
 from tess_requests import Request
 
 
-def process():
+def process(folder):
     requests_csv = []
-    folder = str(input("select dir: "))
-    # folder = '/Users/wolfson/wolfson_dev/tess_requests/molbi'  # testing
+    # folder = '/Users/wolfson/Desktop/homework/molbi/molbi_asv'  # testing
     directory = fr'{folder}'
     for entry in os.scandir(directory):
         if (entry.path.endswith('.jpg')) and entry.is_file():
