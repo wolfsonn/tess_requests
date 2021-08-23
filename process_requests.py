@@ -15,3 +15,4 @@ def process(folder):
                 requests_csv.append(_)
             os.rename(entry, f'{directory}/{obj.case_number}.jpg')
     return requests_csv
+

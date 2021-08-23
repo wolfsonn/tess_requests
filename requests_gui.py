@@ -123,3 +123,4 @@ manage_submit = ttk.Button(manage_status, text='submit', command=lambda: request
 manage_submit.grid(row=1, column=0, columnspan=3, sticky='ew', pady=(1, 0))
 
 root.mainloop()
+

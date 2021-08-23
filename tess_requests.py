@@ -51,10 +51,14 @@ class Request:
 
     @property
     def egn(self):
-        egn_regex = r"ЕГН [\d|\D]{11}"
+        # egn_regex = r"ЕГН [\d|\D]{11}"
+        egn_regex = r"ЕГН\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d\s*\d*\s*"
         egn_search = re.search(egn_regex, self.text)
         if egn_search:
-            egn = egn_search.group().removeprefix('ЕГН ').removesuffix(",").replace(" ", "")
+            egn = egn_search.group().removeprefix('ЕГН ').removesuffix(',').replace(' ', '')
+            if len(egn) != 10:
+                print(len(egn))
+                egn = 'null'
         else:
             egn = 'null'
         return egn
@@ -65,3 +69,4 @@ class Request:
         for _ in self.actions:
             csv_data.append([_, self.case_number, self.egn])
         return csv_data
+

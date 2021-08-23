@@ -28,7 +28,8 @@ def add_requests(folder):
 
 def export_csv_act_status(act, status):
     conn = sqlite3.connect('request.db')
-    if (act in tess_requests.Request.ACTIONS.keys() or act == 'none') and (status == 'pending' or status == 'done' or status == 'none'):
+    if (act in tess_requests.Request.ACTIONS.keys() or act == 'none') and (
+            status == 'pending' or status == 'done' or status == 'none'):
 
         # export all actions, all statuses
         if not act and not status:
@@ -107,5 +108,6 @@ def clear_table():
     c.execute("DELETE FROM requests")
     conn.commit()
     conn.close()
+
 
 # clear_table()
