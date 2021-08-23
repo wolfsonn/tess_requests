@@ -107,3 +107,5 @@ def clear_table():
     c.execute("DELETE FROM requests")
     conn.commit()
     conn.close()
+
+# clear_table()

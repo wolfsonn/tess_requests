@@ -19,7 +19,6 @@ class Request:
 
     def __init__(self, file):
         self.file = file
-        self.csv_data = []
 
     @property
     def text(self):
@@ -27,8 +26,19 @@ class Request:
         return text
 
     @property
+    def actions(self):
+        actions = []
+        for action, keywords in Request.ACTIONS.items():
+            for k in keywords:
+                if k in self.text and action not in actions:
+                    actions.append(action)
+        if len(actions) == 0:
+            actions.append('null')
+        return actions
+
+    @property
     def case_number(self):
-        case_regex = r"изп. дело \d{1,4}/\d{4} г."
+        case_regex = r"изп. дело \d{1,4}\s*/\s*\d{4} г."
         case_search = (re.search(case_regex, self.text))
         if case_search:
             case = case_search.group()
@@ -50,18 +60,8 @@ class Request:
         return egn
 
     @property
-    def actions(self):
-        actions = []
-        for action, keywords in Request.ACTIONS.items():
-            for k in keywords:
-                if k in self.text and action not in actions:
-                    actions.append(action)
-        if len(actions) == 0:
-            actions.append('null')
-        return actions
-
-    def prep_csv(self):
-        data = []
+    def csv_data(self):
+        csv_data = []
         for _ in self.actions:
-            data.append([_, self.case_number, self.egn])
-        self.csv_data = data
+            csv_data.append([_, self.case_number, self.egn])
+        return csv_data

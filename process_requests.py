@@ -10,7 +10,7 @@ def process(folder):
     for entry in os.scandir(directory):
         if (entry.path.endswith('.jpg')) and entry.is_file():
             obj = Request(entry.path)
-            obj.prep_csv()
+            print(entry)
             for _ in obj.csv_data:
                 requests_csv.append(_)
             os.rename(entry, f'{directory}/{obj.case_number}.jpg')
